@@ -1,0 +1,53 @@
+name: Deploy PR Preview
+
+on:
+  pull_request:
+    branches:
+      - main
+    types: [opened, synchronize, reopened]
+
+jobs:
+  deploy-preview:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Fix React Build Paths
+        run: echo "REACT_APP_PUBLIC_URL=/" > .env
+
+      - name: Build React App
+        run: npm run build
+
+      - name: Configure AWS Credentials
+        run: |
+          aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws configure set region ${{ secrets.AWS_REGION }}
+
+      - name: Set PR Deployment Path
+        run: echo "DEPLOY_PATH=pr-${{ github.event.pull_request.number }}" >> $GITHUB_ENV
+
+      - name: Deploy to S3 (Preview)
+        run: aws s3 sync ./build s3://project-preview-mehta/${{ env.DEPLOY_PATH }} --delete
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+
+      - name: Set Correct Content-Type for JS Files
+        run: |
+          aws s3 cp s3://project-preview-mehta/main s3://project-preview-mehta/main --recursive --exclude "*" --include "*.js" --metadata-directive REPLACE --content-type "application/javascript"
+
+      - name: Invalidate CloudFront Cache
+        run: aws cloudfront create-invalidation --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} --paths "/*"
+
+      - name: Comment on PR with Preview URL
+        uses: thollander/actions-comment-pull-request@v2
+        with:
+          message: "🚀 Preview deployed: [View Preview](https://d1c5htd0a9w64b.cloudfront.net/${{ env.DEPLOY_PATH }}/index.html)"
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
