@@ -29,6 +29,7 @@ function App() {
             </p>
           </div>
         </div>
+        </div>
       </div>
     </div>
   );
