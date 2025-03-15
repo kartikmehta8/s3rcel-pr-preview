@@ -1,5 +1,4 @@
 import s3Logo from './assets/s3.svg';
-import cloudfrontLogo from './assets/cloudfront.png';
 
 function App() {
   return (
