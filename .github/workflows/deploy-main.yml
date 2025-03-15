@@ -29,11 +29,11 @@ jobs:
           aws configure set region ${{ secrets.AWS_REGION }}
 
       - name: Deploy to S3
-        run: aws s3 sync ./build s3://project-preview-mehta/main --delete
+        run: aws s3 sync ./build s3://${{ secrets.AWS_S3_BUCKET_NAME }}/main --delete
 
       - name: Set Correct Content-Type for JS Files
         run: |
-          aws s3 cp s3://project-preview-mehta/main s3://project-preview-mehta/main --recursive --exclude "*" --include "*.js" --metadata-directive REPLACE --content-type "application/javascript"
+          aws s3 cp s3://${{ secrets.AWS_S3_BUCKET_NAME }}/main s3://${{ secrets.AWS_S3_BUCKET_NAME }}/main --recursive --exclude "*" --include "*.js" --metadata-directive REPLACE --content-type "application/javascript"
 
       - name: Invalidate CloudFront Cache
         run: aws cloudfront create-invalidation --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} --paths "/*"

@@ -36,11 +36,11 @@ jobs:
         run: echo "DEPLOY_PATH=pr-${{ github.event.pull_request.number }}" >> $GITHUB_ENV
 
       - name: Deploy to S3 (Preview)
-        run: aws s3 sync ./build s3://project-preview-mehta/${{ env.DEPLOY_PATH }} --delete
+        run: aws s3 sync ./build s3://${{ secrets.AWS_S3_BUCKET_NAME }}/${{ env.DEPLOY_PATH }} --delete
 
       - name: Set Correct Content-Type for JS Files
         run: |
-          aws s3 cp s3://project-preview-mehta/main s3://project-preview-mehta/main --recursive --exclude "*" --include "*.js" --metadata-directive REPLACE --content-type "application/javascript"
+          aws s3 cp s3://${{ secrets.AWS_S3_BUCKET_NAME }}/main s3://${{ secrets.AWS_S3_BUCKET_NAME }}/main --recursive --exclude "*" --include "*.js" --metadata-directive REPLACE --content-type "application/javascript"
 
       - name: Invalidate CloudFront Cache
         run: aws cloudfront create-invalidation --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} --paths "/*"
@@ -48,5 +48,5 @@ jobs:
       - name: Comment on PR with Preview URL
         uses: thollander/actions-comment-pull-request@v2
         with:
-          message: "🚀 Preview deployed: [View Preview](https://d1c5htd0a9w64b.cloudfront.net/${{ env.DEPLOY_PATH }}/index.html)"
+          message: "🚀 Preview deployed: [View Preview](https://${{ secrets.CLOUDFRONT_DISTRIBUTION_DOMAIN_NAME }}/${{ env.DEPLOY_PATH }}/index.html)"
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
