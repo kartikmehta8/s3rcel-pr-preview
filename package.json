@@ -1,5 +1,5 @@
 {
-  "name": "pr-build-preview",
+  "name": "s3rcel",
   "version": "0.1.0",
   "private": true,
   "homepage": ".",
@@ -29,5 +29,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.4.17"
   }
 }
