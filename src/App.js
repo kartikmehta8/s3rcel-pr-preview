@@ -1,4 +1,3 @@
-import s3Logo from './assets/s3.svg';
 import cloudfrontLogo from './assets/cloudfront.png';
 
 function App() {
@@ -17,11 +16,6 @@ function App() {
         <div className="bg-white shadow overflow-hidden rounded-lg">
           <div className="px-4 py-5 sm:p-6">
             <div className="flex justify-center space-x-8 mb-8">
-              {/* AWS S3 Logo */}
-              <div className="flex flex-col items-center">
-                <img src={s3Logo} alt="Amazon S3" className="w-16 h-16 object-contain" />
-                <span className="mt-2 text-sm font-medium text-gray-900">Amazon S3</span>
-              </div>
 
               {/* CloudFront Logo */}
               <div className="flex flex-col items-center">
