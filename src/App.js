@@ -1,7 +1,11 @@
+import React, { useState } from 'react';
 import s3Logo from './assets/s3.svg';
 import cloudfrontLogo from './assets/cloudfront.png';
+import EnvironmentVariables from './components/EnvironmentVariables';
 
 function App() {
+  const [activeEnvironment, setActiveEnvironment] = useState('preview');
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-3xl mx-auto">
@@ -14,7 +18,7 @@ function App() {
           </p>
         </div>
 
-        <div className="bg-white shadow overflow-hidden rounded-lg">
+        <div className="bg-white shadow overflow-hidden rounded-lg mb-8">
           <div className="px-4 py-5 sm:p-6">
             <div className="flex justify-center space-x-8 mb-8">
               {/* AWS S3 Logo */}
@@ -58,6 +62,43 @@ function App() {
             </p>
           </div>
         </div>
+
+        {/* Environment Variables Section */}
+        <div className="mb-8">
+          <div className="sm:hidden">
+            <label htmlFor="environment" className="sr-only">Select Environment</label>
+            <select
+              id="environment"
+              name="environment"
+              className="block w-full rounded-md border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
+              value={activeEnvironment}
+              onChange={(e) => setActiveEnvironment(e.target.value)}
+            >
+              <option value="preview">Preview Environment</option>
+              <option value="production">Production Environment</option>
+              <option value="development">Development Environment</option>
+            </select>
+          </div>
+          <div className="hidden sm:block">
+            <nav className="flex space-x-4" aria-label="Environment">
+              {['preview', 'production', 'development'].map((env) => (
+                <button
+                  key={env}
+                  onClick={() => setActiveEnvironment(env)}
+                  className={`${
+                    activeEnvironment === env
+                      ? 'bg-indigo-100 text-indigo-700'
+                      : 'text-gray-500 hover:text-gray-700'
+                  } px-3 py-2 font-medium text-sm rounded-md capitalize`}
+                >
+                  {env}
+                </button>
+              ))}
+            </nav>
+          </div>
+        </div>
+
+        <EnvironmentVariables environment={activeEnvironment} />
       </div>
     </div>
   );
