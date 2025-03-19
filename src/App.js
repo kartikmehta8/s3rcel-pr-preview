@@ -49,6 +49,13 @@ function App() {
                   <span className="inline-flex items-center justify-center h-6 w-6 rounded-full bg-indigo-500 text-white mr-2 flex-shrink-0">4</span>
                   <span>Preview URL is posted as a comment on the PR</span>
                 </li>
+                <li className="flex items-start bg-indigo-100 p-2 rounded-md">
+                  <span className="inline-flex items-center justify-center h-6 w-6 rounded-full bg-green-500 text-white mr-2 flex-shrink-0">🎉</span>
+                  <span>
+                    This PR was raised as an <strong>example</strong> to demonstrate that the workflow is running successfully.  
+                    &nbsp;<span className="text-green-600 font-semibold">Congrats! 🚀</span>
+                  </span>
+                </li>
               </ul>
             </div>
           </div>
